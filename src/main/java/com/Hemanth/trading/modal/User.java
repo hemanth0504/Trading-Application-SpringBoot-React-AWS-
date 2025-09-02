@@ -1,11 +1,9 @@
 package com.Hemanth.trading.modal;
 
 
+import com.Hemanth.trading.domain.USER_ROLE;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -20,5 +18,10 @@ public class User {
     private String email;
     @JsonProperty(access= JsonProperty.Access.WRITE_ONLY) //password will only be writable
     private String password;
+
+    @Embedded
+    private TwoFactorAuth twoFactorAuth = new TwoFactorAuth();
+
+    private USER_ROLE role = USER_ROLE.ROLE_CUSTOMER;
 
 }
