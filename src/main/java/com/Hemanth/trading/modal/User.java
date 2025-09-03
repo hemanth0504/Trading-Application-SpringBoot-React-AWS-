@@ -1,13 +1,17 @@
 package com.Hemanth.trading.modal;
 
-
-import com.Hemanth.trading.domain.USER_ROLE;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.Hemanth.trading.domain.USER_ROLE;
+import com.Hemanth.trading.domain.UserStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -16,12 +20,20 @@ public class User {
 
     private String fullName;
     private String email;
-    @JsonProperty(access= JsonProperty.Access.WRITE_ONLY) //password will only be writable
+    private String mobile;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @Embedded
-    private TwoFactorAuth twoFactorAuth = new TwoFactorAuth();
+    private UserStatus status= UserStatus.PENDING;
 
-    private USER_ROLE role = USER_ROLE.ROLE_CUSTOMER;
+    private boolean isVerified = false;
+
+    @Embedded
+    private TwoFactorAuth twoFactorAuth= new TwoFactorAuth();
+
+    private String picture;
+
+    private USER_ROLE role= USER_ROLE.ROLE_USER;
 
 }
