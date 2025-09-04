@@ -1,4 +1,4 @@
-package com.Hemanth.trading.modal;
+package com.Hemanth.trading.model;
 
 
 import com.Hemanth.trading.domain.VerificationType;

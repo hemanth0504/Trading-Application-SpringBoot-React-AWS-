@@ -1,7 +1,7 @@
 package com.Hemanth.trading.service;
 
-import com.Hemanth.trading.modal.TwoFactorOTP;
-import com.Hemanth.trading.modal.User;
+import com.Hemanth.trading.model.TwoFactorOTP;
+import com.Hemanth.trading.model.User;
 import com.Hemanth.trading.repository.TwoFactorOtpRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

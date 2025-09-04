@@ -1,4 +1,4 @@
-package com.Hemanth.trading.modal;
+package com.Hemanth.trading.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
