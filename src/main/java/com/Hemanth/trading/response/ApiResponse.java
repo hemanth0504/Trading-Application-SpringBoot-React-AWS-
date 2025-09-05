@@ -5,14 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class AuthResponse {
+@NoArgsConstructor
+public class ApiResponse {
 	
-	private String jwt;
-	private boolean status;
 	private String message;
-	private boolean isTwoFactorAuthEnabled=false;
-	private String session;
+	private boolean status;
 
 }

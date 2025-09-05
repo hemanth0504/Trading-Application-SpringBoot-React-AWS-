@@ -19,7 +19,7 @@ public interface UserService {
 	public User enabledTwoFactorAuthentication(VerificationType verificationType,
 											   String sendTo, User user) throws UserException;
 
-//	public List<User> getPendingRestaurantOwner();
+//	public List<User> getPenddingRestaurantOwner();
 
 	User updatePassword(User user, String newPassword);
 
