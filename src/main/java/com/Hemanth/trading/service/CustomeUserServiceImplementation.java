@@ -1,6 +1,6 @@
 package com.Hemanth.trading.service;
 
-import com.Hemanth.trading.modal.User;
+import com.Hemanth.trading.model.User;
 import com.Hemanth.trading.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,27 +17,27 @@ import java.util.List;
 public class CustomeUserServiceImplementation implements UserDetailsService {
 
 
-    private UserRepository userRepository;
+private UserRepository userRepository;
+	
+	public CustomeUserServiceImplementation(UserRepository userRepository) {
+		this.userRepository=userRepository;
+	}
 
-    public CustomeUserServiceImplementation(UserRepository userRepository) {
-        this.userRepository=userRepository;
-    }
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = userRepository.findByEmail(username);
+		
+		if(user==null) {
 
-        User user = userRepository.findByEmail(username);
+			throw new UsernameNotFoundException("user not found with email  - "+username);
+		}
+		
+		List<GrantedAuthority> authorities=new ArrayList<>();
 
-        if(user==null) {
-
-            throw new UsernameNotFoundException("user not found with email  - "+username);
-        }
-
-        List<GrantedAuthority> authorities=new ArrayList<>();
-
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),user.getPassword(),authorities);
-    }
+		return new org.springframework.security.core.userdetails.User(
+				user.getEmail(),user.getPassword(),authorities);
+	}
 
 
 }
