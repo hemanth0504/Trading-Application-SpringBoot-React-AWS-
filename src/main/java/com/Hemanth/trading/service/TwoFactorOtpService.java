@@ -3,7 +3,6 @@ package com.Hemanth.trading.service;
 import com.Hemanth.trading.model.TwoFactorOTP;
 import com.Hemanth.trading.model.User;
 
-
 public interface TwoFactorOtpService {
 
     TwoFactorOTP createTwoFactorOtp(User user, String otp, String jwt);
