@@ -1,0 +1,39 @@
+{
+  "family": "trading-backend-task",
+  "networkMode": "awsvpc",
+  "cpu": "512",
+  "memory": "1024",
+  "requiresCompatibilities": ["FARGATE"],
+  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/tradingBackendAppRole",
+  "containerDefinitions": [{
+    "name": "trading-backend",
+    "image": "public.ecr.aws/amazonlinux/amazonlinux:latest",
+    "portMappings": [{ "containerPort": 8080, "protocol": "tcp" }],
+    "essential": true,
+    "environment": [
+      { "name": "SERVER_PORT", "value": "8080" },
+      { "name": "SPRING_PROFILES_ACTIVE", "value": "prod" }
+    ],
+    "secrets": [
+      { "name": "DB_URL", "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/trading/db/url" }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-region": "<REGION>",
+        "awslogs-group": "/ecs/trading-backend",
+        "awslogs-stream-prefix": "ecs"
+      },
+
+    },
+
+    "healthCheck": {
+      "command": ["CMD-SHELL","curl -f http://localhost:8080/actuator/health || exit 1"],
+      "interval": 30,
+      "timeout": 5,
+      "retries": 3,
+      "startPeriod": 60
+     }
+  }]
+}
