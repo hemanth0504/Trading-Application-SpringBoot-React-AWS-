@@ -4,8 +4,8 @@
   "cpu": "512",
   "memory": "1024",
   "requiresCompatibilities": ["FARGATE"],
-  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/ecsTaskExecutionRole",
-  "taskRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/tradingBackendAppRole",
+  "executionRoleArn": "arn:aws:iam::145023098554:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::145023098554:role/tradingBackendAppRole",
   "containerDefinitions": [{
     "name": "trading-backend",
     "image": "public.ecr.aws/amazonlinux/amazonlinux:latest",
@@ -16,17 +16,28 @@
       { "name": "SPRING_PROFILES_ACTIVE", "value": "prod" }
     ],
     "secrets": [
-      { "name": "DB_URL", "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/trading/db/url" }
+      {
+        "name": "DB_URL",
+        "valueFrom": "arn:aws:ssm:us-east-1:145023098554:parameter/trading/db/url"
+      },
+      {
+        "name": "DB_USER",
+        "valueFrom": "arn:aws:ssm:us-east-1:145023098554:parameter/trading/db/user"
+      },
+      {
+        "name": "DB_PASSWORD",
+        "valueFrom": "arn:aws:ssm:us-east-1:145023098554:parameter/trading/db/password"
+      }
     ],
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
-        "awslogs-region": "<REGION>",
+        "awslogs-region": "us-east-1",
         "awslogs-group": "/ecs/trading-backend",
         "awslogs-stream-prefix": "ecs"
-      },
-
+      }
     },
+
 
     "healthCheck": {
       "command": ["CMD-SHELL","curl -f http://localhost:8080/actuator/health || exit 1"],
