@@ -87,64 +87,52 @@ public class ChatBotServiceImpl implements ChatBotService{
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(OPENAI_API_KEY); // Secure API key usage
-
-        // Step 1: Define the function schema
-        JSONObject parameters = new JSONObject();
-        JSONObject properties = new JSONObject();
-
-        properties.put("currencyName", new JSONObject()
-                .put("type", "string")
-                .put("description", "The currency name, id, or symbol"));
-        properties.put("currencyData", new JSONObject()
-                .put("type", "string")
-                .put("description", "Detailed data like price, market cap, supply, etc."));
-
-        parameters.put("type", "object");
-        parameters.put("properties", properties);
-        parameters.put("required", new JSONArray().put("currencyName").put("currencyData"));
+        headers.setBearerAuth(OPENAI_API_KEY);
 
         JSONObject function = new JSONObject();
         function.put("name", "getCoinDetails");
         function.put("description", "Get the coin details from given currency object");
+        JSONObject parameters = new JSONObject();
+        JSONObject properties = new JSONObject();
+        properties.put("currencyName", new JSONObject()
+                .put("type", "string")
+                .put("description", "The currency name, id, or symbol"));
+        parameters.put("type", "object");
+        parameters.put("properties", properties);
+        parameters.put("required", new JSONArray().put("currencyName"));
         function.put("parameters", parameters);
 
-        JSONArray functionsArray = new JSONArray();
-        functionsArray.put(function);
+        JSONArray functionsArray = new JSONArray().put(function);
 
-        // Step 2: Add user message
-        JSONArray messages = new JSONArray();
-        messages.put(new JSONObject()
-                .put("role", "user")
-                .put("content", prompt));
+        JSONArray messages = new JSONArray().put(
+                new JSONObject().put("role", "user").put("content", prompt)
+        );
 
-        // Step 3: Build final body
-        JSONObject requestBody = new JSONObject();
-        requestBody.put("model", OPENAI_MODEL);
-        requestBody.put("messages", messages);
-        requestBody.put("functions", functionsArray);
-        requestBody.put("function_call", "auto");
+        JSONObject requestBody = new JSONObject()
+                .put("model", OPENAI_MODEL)
+                .put("messages", messages)
+                .put("functions", functionsArray)
+                .put("function_call", "auto");
 
-        // Step 4: Make request
         HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), headers);
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.postForEntity(OPENAI_API_URL, entity, String.class);
 
-        // Step 5: Parse response
         String responseBody = response.getBody();
         System.out.println("OpenAI Raw Response:\n" + responseBody);
         ReadContext ctx = JsonPath.parse(responseBody);
 
         String functionName = ctx.read("$.choices[0].message.function_call.name");
-        String currencyName = ctx.read("$.choices[0].message.function_call.arguments.currencyName");
-        String currencyData = ctx.read("$.choices[0].message.function_call.arguments.currencyData");
+        String argumentsStr = ctx.read("$.choices[0].message.function_call.arguments");
+
+        // 🔧 FIX: parse arguments properly
+        JSONObject argsJson = new JSONObject(argumentsStr);
+        String currencyName = argsJson.getString("currencyName");
 
         FunctionResponse res = new FunctionResponse();
         res.setFunctionName(functionName);
         res.setCurrencyName(currencyName);
-        res.setCurrencyData(currencyData);
 
-        System.out.println("OpenAI Function Call → " + functionName + " | " + currencyName + " | " + currencyData);
         return res;
     }
 
