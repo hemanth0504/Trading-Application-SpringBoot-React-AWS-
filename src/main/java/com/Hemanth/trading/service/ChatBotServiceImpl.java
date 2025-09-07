@@ -151,49 +151,61 @@ public class ChatBotServiceImpl implements ChatBotService{
 
 
 
-
     @Override
     public ApiResponse getCoinDetails(String prompt) {
-        FunctionResponse res = getFunctionResponse(prompt);
-        String coinData = makeApiRequest(res.getCurrencyName()).toString();
+        try {
+            FunctionResponse res = getFunctionResponse(prompt);
 
-        String OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
+            if (res.getCurrencyName() == null || res.getCurrencyName().isEmpty()) {
+                ApiResponse errorRes = new ApiResponse();
+                errorRes.setMessage("Could not determine a valid coin name from the prompt.");
+                return errorRes;
+            }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(OPENAI_API_KEY);
+            CoinDTO coinDto = makeApiRequest(res.getCurrencyName());
+            if (coinDto == null) {
+                ApiResponse errorRes = new ApiResponse();
+                errorRes.setMessage("Coin not found: " + res.getCurrencyName());
+                return errorRes;
+            }
 
-        JSONArray messages = new JSONArray();
+            String OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
 
-        // User message with prompt
-        messages.put(new JSONObject()
-                .put("role", "user")
-                .put("content", prompt));
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBearerAuth(OPENAI_API_KEY);
 
-        // Function response (simulate prior function call)
-        messages.put(new JSONObject()
-                .put("role", "function")
-                .put("name", res.getFunctionName())
-                .put("content", coinData));
+            JSONArray messages = new JSONArray();
+            messages.put(new JSONObject().put("role", "user").put("content", prompt));
+            messages.put(new JSONObject().put("role", "function")
+                    .put("name", res.getFunctionName())
+                    .put("content", coinDto.toString()));
 
-        JSONObject requestBody = new JSONObject();
-        requestBody.put("model", "gpt-4-0613");
-        requestBody.put("messages", messages);
+            JSONObject requestBody = new JSONObject();
+            requestBody.put("model", "gpt-4-0613");
+            requestBody.put("messages", messages);
 
-        HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), headers);
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.postForEntity(OPENAI_API_URL, entity, String.class);
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), headers);
+            ResponseEntity<String> response = restTemplate.postForEntity(OPENAI_API_URL, entity, String.class);
 
-        String responseBody = response.getBody();
-        ReadContext ctx = JsonPath.parse(responseBody);
+            String responseBody = response.getBody();
+            ReadContext ctx = JsonPath.parse(responseBody);
+            String finalMessage = ctx.read("$.choices[0].message.content");
 
-        String finalMessage = ctx.read("$.choices[0].message.content");
+            ApiResponse ans = new ApiResponse();
+            ans.setMessage(finalMessage);
 
-        ApiResponse ans = new ApiResponse();
-        ans.setMessage(finalMessage);
+            return ans;
 
-        return ans;
+        } catch (Exception e) {
+            e.printStackTrace();
+            ApiResponse errorRes = new ApiResponse();
+            errorRes.setMessage("Error processing request: " + e.getMessage());
+            return errorRes;
+        }
     }
+
 
 
     @Override
