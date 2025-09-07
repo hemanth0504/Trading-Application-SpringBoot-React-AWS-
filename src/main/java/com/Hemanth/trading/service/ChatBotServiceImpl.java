@@ -189,7 +189,7 @@ public class ChatBotServiceImpl implements ChatBotService{
         } catch (Exception e) {
             e.printStackTrace();
             ApiResponse errorRes = new ApiResponse();
-            errorRes.setMessage("Error processing request: " + e.getMessage());
+            errorRes.setMessage("Error processing request:   " + e.getMessage());
             return errorRes;
         }
     }
