@@ -90,7 +90,7 @@ public class AppConfig {
                                         "http://localhost:5173",
                                         "http://localhost:5174",
                                         "http://localhost:4200",
-                                        "https://treading.vercel.app"
+                                        "https://d9tpl2eurukj.cloudfront.net"
                                 ));
                                 cfg.setAllowedMethods(Collections.singletonList("*"));
                                 cfg.setAllowCredentials(true);
