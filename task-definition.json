@@ -25,7 +25,7 @@
       { "name": "RAZORPAY_API_KEY", "valueFrom": "arn:aws:ssm:us-east-1:145023098554:parameter/trading/razorpay/api-key" },
       { "name": "RAZORPAY_API_SECRET", "valueFrom": "arn:aws:ssm:us-east-1:145023098554:parameter/trading/razorpay/api-secret" },
       { "name": "COINGECKO_API_KEY", "valueFrom": "arn:aws:ssm:us-east-1:145023098554:parameter/trading/coingecko/api-key" },
-      { "name": "OPENAI_API_KEY", "valueFrom": "arn:aws:ssm:us-east-1:145023098554:parameter/trading/gemini/api-key" },
+      { "name": "OPENAI_API_KEY", "valueFrom": "arn:aws:ssm:us-east-1:145023098554:parameter/trading/openai/api-key" },
       { "name": "GOOGLE_CLIENT_ID", "valueFrom": "arn:aws:ssm:us-east-1:145023098554:parameter/trading/google/client-id" },
       { "name": "GOOGLE_CLIENT_SECRET", "valueFrom": "arn:aws:ssm:us-east-1:145023098554:parameter/trading/google/client-secret" }
     ]
