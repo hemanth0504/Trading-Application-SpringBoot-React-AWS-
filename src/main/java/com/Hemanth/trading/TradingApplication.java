@@ -10,6 +10,6 @@ public class TradingApplication {
 		SpringApplication.run(TradingApplication.class, args);
 	}
 		public void run(){
-			System.out.println("Hello world !!");
+			System.out.println("CI/CD Github Actions are set up successfully  !!");
 		}
 }
