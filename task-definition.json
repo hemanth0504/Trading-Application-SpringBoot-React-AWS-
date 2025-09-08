@@ -27,6 +27,7 @@
       { "name": "COINGECKO_API_KEY", "valueFrom": "arn:aws:ssm:us-east-1:145023098554:parameter/trading/coingecko/api-key" },
       { "name": "OPENAI_API_KEY", "valueFrom": "arn:aws:ssm:us-east-1:145023098554:parameter/trading/openai/api-key" },
       { "name": "GOOGLE_CLIENT_ID", "valueFrom": "arn:aws:ssm:us-east-1:145023098554:parameter/trading/google/client-id" },
+      { "name": "FRONTEND_URL", "valueFrom": "arn:aws:ssm:us-east-1:145023098554:parameter/trading/frontend/url" },
       { "name": "GOOGLE_CLIENT_SECRET", "valueFrom": "arn:aws:ssm:us-east-1:145023098554:parameter/trading/google/client-secret" }
     ]
   ,

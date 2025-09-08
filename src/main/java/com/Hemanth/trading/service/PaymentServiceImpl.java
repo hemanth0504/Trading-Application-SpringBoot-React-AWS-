@@ -33,6 +33,10 @@ public class PaymentServiceImpl implements PaymentService{
     @Value("${razorpay.api.secret}")
     private String apiSecret;
 
+    @Value("${frontend.url}")
+    private String frontendUrl;
+
+
     @Autowired
     private PaymentOrderRepository paymentOrderRepository;
 
@@ -117,8 +121,9 @@ public class PaymentServiceImpl implements PaymentService{
             paymentLinkRequest.put("reminder_enable",true);
 
             // Set the callback URL and method
-            paymentLinkRequest.put("callback_url","http://localhost:5173/wallet/"+orderId);
-            paymentLinkRequest.put("callback_method","get");
+            paymentLinkRequest.put("callback_url", frontendUrl + "/wallet/" + orderId);
+            paymentLinkRequest.put("callback_method", "get");
+
 
             // Create the payment link using the paymentLink.create() method
             PaymentLink payment = razorpay.paymentLink.create(paymentLinkRequest);
@@ -146,8 +151,8 @@ public class PaymentServiceImpl implements PaymentService{
         SessionCreateParams params = SessionCreateParams.builder()
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl("http://localhost:5173/wallet?order_id="+orderId)
-                .setCancelUrl("http://localhost:5173/payment/cancel")
+                .setSuccessUrl(frontendUrl + "/wallet?order_id=" + orderId)
+                .setCancelUrl(frontendUrl + "/payment/cancel")
                 .addLineItem(SessionCreateParams.LineItem.builder()
                         .setQuantity(1L)
                         .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
